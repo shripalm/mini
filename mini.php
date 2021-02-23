@@ -57,6 +57,9 @@
 
 
         // For getting multiple value from database
+        // field is array for fields
+        // from is for table name
+        // whereCond is for where Condition
         public static function getMValue($field, $from, $whereCond){
 
         }
