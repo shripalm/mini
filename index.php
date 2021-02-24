@@ -2,9 +2,9 @@
 <?php
     require_once('mini.php');
     $fields = array(
-        'l_name',
-        'f_name'
+        '*'
     );
-    $val = MINI::getMValue($fields,"personal_details","id = '".(MINI::getSValue("person_det_id","login","email = 'svrcti19@gmail.com'"))."'");
-    print_r($val);
+    $sValue = MINI::getSValue("person_det_id","login","email = 'svrcti19@gmail.com'");
+    $mValue = MINI::getMValue($fields,"personal_details","1","*");
+    print_r($mValue);
 ?>  
