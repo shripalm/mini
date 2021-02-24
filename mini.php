@@ -40,15 +40,16 @@
         // whereCond is for where Condition
         public static function getSValue($field, $from, $whereCond){
             try{
-                $selector = $GLOBALS['conn']->query("select $field from $from where $whereCond");
+                $qry = "select $field from $from where $whereCond";
+                $selector = $GLOBALS['conn']->query($qry);
                 if(!$selector){
-                    throw new Exception($GLOBALS['conn']->error);
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['conn']->error);
                 }
                 $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
                 $GLOBALS['ret'] = $selector[0][$field];
             }
             catch(Exception $e){
-                $GLOBALS['ret'] = "MySQL Error: ".$e->getMessage();
+                $GLOBALS['ret'] = $e->getMessage();
             }
             finally{
                 return $GLOBALS['ret'];
@@ -65,15 +66,16 @@
                 if(is_array($field)){
                     $field = implode(', ', $field);
                 }
-                $selector = $GLOBALS['conn']->query("select $field from $from where $whereCond");
+                $qry = "select $field from $from where $whereCond";
+                $selector = $GLOBALS['conn']->query($qry);
                 if(!$selector){
-                    throw new Exception($GLOBALS['conn']->error);
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['conn']->error);
                 }
                 $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
                 $GLOBALS['ret'] = $selector[0];
             }
             catch(Exception $e){
-                $GLOBALS['ret'] = "MySQL Error: ".$e->getMessage();
+                $GLOBALS['ret'] = $e->getMessage();
             }
             finally{
                 return $GLOBALS['ret'];
