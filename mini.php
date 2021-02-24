@@ -9,7 +9,7 @@
 
 
     // configuration starts
-    error_reporting(0);
+    // error_reporting(0);
 
 
     // initialize return variable
@@ -57,11 +57,27 @@
 
 
         // For getting multiple value from database
-        // field is array for fields
+        // field is array for fields | single value for *
         // from is for table name
         // whereCond is for where Condition
         public static function getMValue($field, $from, $whereCond){
-
+            try{
+                if(is_array($field)){
+                    $field = implode(', ', $field);
+                }
+                $selector = $GLOBALS['conn']->query("select $field from $from where $whereCond");
+                if(!$selector){
+                    throw new Exception($GLOBALS['conn']->error);
+                }
+                $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
+                $GLOBALS['ret'] = $selector[0];
+            }
+            catch(Exception $e){
+                $GLOBALS['ret'] = "MySQL Error: ".$e->getMessage();
+            }
+            finally{
+                return $GLOBALS['ret'];
+            } 
         }
     }
 ?>
