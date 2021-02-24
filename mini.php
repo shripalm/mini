@@ -9,9 +9,6 @@
 
 
     // configuration starts
-    error_reporting(0);
-
-
     // initialize return variable
     $ret = null;
     
