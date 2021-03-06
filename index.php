@@ -1,10 +1,14 @@
 <pre>
 <?php
-    require_once('mini.php');
+    require 'mini.php';
     $fields = array(
         '*'
     );
-    $sValue = MINI::getSValue("person_det_id","login","email = 'svrcti19@gmail.com'");
-    $mValue = MINI::getMValue($fields,"personal_details",1,"*");
+    $remove = array(
+        'password',
+        'id'
+    );
+    $sValue = MINI::getSValue("person_det_id","login",limit: '0,2');
+    $mValue = MINI::getMValue($fields,"login",limit: "*",remove: 'password, id, id at last');
     print_r($mValue);
 ?>
