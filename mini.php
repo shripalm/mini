@@ -38,7 +38,7 @@
         // limit is for limit i.e. (0,5) is similar to (limit 0,5), * is similar to all, default is 1
         public static function getSValue($field, $from, $whereCond = 1, $limit = 1){
             try{
-                if($field = '*'){
+                if($field == '*'){
                     throw new Exception("You can use getMValue() instead of getSValue() for (*)");
                 }
                 $one = 0;
@@ -63,6 +63,7 @@
                 if(count($selector) == 0){
                     throw new Exception("No data found");
                 }
+                $GLOBALS['returnData'] = null;
                 if($one == 1){
                     $GLOBALS['returnData'] = $selector[0][$field];
                 }
@@ -84,7 +85,12 @@
         // from is for table name
         // whereCond is for where Condition
         // limit is for limit i.e. (0,5) is similar to (limit 0,5), * is similar to all, default is 1
-        public static function getMValue($field, $from, $whereCond = 1, $limit = 1, $remove = []){
+        // remove is for removing some parameters while fetching all date
+        // substr at last will checks that substr at condition occurs or not
+        // substr at first will checks that substr at condition occurs or not
+        // substr at (any word except last,first) will checks that substr at condition occurs or not
+        // must in those condition while substr at (key-word) is set and you have to fetch something important field from that condition
+        public static function getMValue($field, $from, $whereCond = 1, $limit = 1, $remove = [], $must = []){
             try{
                 if(is_array($field)){
                     $field = implode(', ', $field);
@@ -111,22 +117,48 @@
                 if(count($selector) == 0){
                     throw new Exception("No data found");
                 }
+                $GLOBALS['returnData'] = null;
                 if($one == 1){
-                    $GLOBALS['returnData'] = $selector[0];
+                    $GLOBALS['returnData'][0] = $selector[0];
                 }
                 else{
                     $GLOBALS['returnData'] = $selector;
                 }
                 if(! is_array($remove)){
                     $remove = explode(',', $remove);
+                    if(! is_array($must)){
+                        $must = explode(',',$must);
+                    }
                 }
+                $remove = array_map('trim',array_filter($remove));
+                $must = array_map('trim',array_filter($must));
                 foreach($remove as $keyRemove => $valueRemove){
-                    if($one == 1){
-                        unset($GLOBALS['returnData'][trim($valueRemove)]);
+                    if(str_contains($valueRemove, ' at ')){
+                        $valueAsCommand = explode(' at ',$valueRemove);
+                        switch ($valueAsCommand[1]) {
+                            case 'last':
+                                $operationMethod = 'str_ends_with';
+                                break;
+                            case 'first':
+                                $operationMethod = 'str_starts_with';
+                                break;
+                            default:
+                                $operationMethod = 'str_contains';
+                                break;
+                        }
+                        foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
+                            foreach ($valueReturn as $keyCommand => $valueCommand) {
+                                if($operationMethod($keyCommand,$valueAsCommand[0])){
+                                    if(! in_array($keyCommand, $must)){
+                                        unset($GLOBALS['returnData'][$keyReturn][$keyCommand]);
+                                    }
+                                }
+                            }
+                        }
                     }
                     else{
                         foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
-                            unset($GLOBALS['returnData'][$keyReturn][trim($valueRemove)]);
+                            unset($GLOBALS['returnData'][$keyReturn][$valueRemove]);
                         }
                     }
                 }

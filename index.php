@@ -4,11 +4,11 @@
     $fields = array(
         '*'
     );
-    $remove = array(
-        'password',
+    $must = array(
+        ' sm_id',
         'id'
     );
-    $sValue = MINI::getSValue("person_det_id","login",limit: '0,2');
-    $mValue = MINI::getMValue($fields,"login",limit: "*",remove: 'password, id, id at last');
+    print_r(MINI::getSValue("person_det_id,id","login",limit: '0,2'));
+    $mValue = MINI::getMValue($fields,"login",remove: 'password, id at last',limit: '*',must: $must);
     print_r($mValue);
 ?>
