@@ -18,7 +18,7 @@
     
     
     // echoing error on connection error
-    if($connection->connect_errno){        
+    if($connection->connect_errno){
         echo "Failed to connect to MySQL: ".$connection->connect_error;
         exit;
     }
