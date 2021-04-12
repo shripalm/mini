@@ -30,6 +30,10 @@
             // Constructor
         }
 
+        
+        function runTimeError($mName){
+            $GLOBALS['returnData'] = "Run Time Error Occured on initializing function: $mName";
+        }
 
         // For getting single value from database
         // field is for single field
@@ -38,6 +42,7 @@
         // limit is for limit i.e. (0,5) is similar to (limit 0,5), * is similar to all, default is 1
         public static function getSValue($field, $from, $whereCond = 1, $limit = 1){
             try{
+               (new self)->runTimeError("getSValue");
                 if($field == '*'){
                     throw new Exception("You can use getMValue() instead of getSValue() for (*)");
                 }
@@ -92,6 +97,7 @@
         // must in those condition while substr at (key-word) is set and you have to fetch something important field from that condition
         public static function getMValue($field, $from, $whereCond = 1, $limit = 1, $remove = [], $must = []){
             try{
+               (new self)->runTimeError("getMValue");
                 if(is_array($field)){
                     $field = implode(', ', $field);
                 }
@@ -170,8 +176,106 @@
                 return $GLOBALS['returnData'];
             } 
         }
-    }
 
+
+        // $keyValueSet indicates set of keys and values...
+        /*
+            $keyValueSet = array(
+                "field"=>array("name","discription","email","datetime"),
+                "value"=>array(
+                    array(
+                        "Test",
+                        "Testing insertion method",
+                        "test@test.69hub",
+                        "2021-04-12 16:58:33"
+                    ),
+                    array(
+                        "Test2",
+                        "Testing insertion method2",
+                        "test2@test.69hub",
+                        "2021-04-12 16:58:34"
+                    )
+                )
+            );
+        */
+        public static function insert($table, $keyValueSet){
+            try{
+               (new self)->runTimeError("insert");
+                $keySet = $valueSet = array();
+                if( (!isset($keyValueSet['field'])) || (!isset($keyValueSet['value'])) || (!is_array($keyValueSet['field'])) || (!is_array($keyValueSet['value'])) ) throw new Exception("Check Your keyValueSet array..!");
+                foreach ($keyValueSet['field'] as $key => $value) {
+                    $keySet[] = "`".$value."`";
+                }
+                foreach ($keyValueSet['value'] as $key => $value) {
+                    $tempValueSet = array();
+                    if(!is_array($value)) throw new Exception("Check Your keyValueSet array..!");
+                    foreach ($value as $keyValue => $valueValue) {
+                        $tempValueSet[] = "'".$valueValue."'";
+                    }
+                    $valueSet[] = "(".implode(',',$tempValueSet).")";
+                }
+                $keySet = implode(', ',$keySet);
+                $valueSet = implode(', ',$valueSet);
+                $qry = "insert into $table($keySet) values $valueSet";
+                $insertion = $GLOBALS['connection']->query($qry);
+                if(!$insertion){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $GLOBALS['returnData'] = $GLOBALS['connection']->insert_id;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            } 
+        }
+
+
+
+
+        // $keyValueSet indicates set of keys and values of a directly form or formate as defined
+        /*
+            $keyValueSet = array(
+                "name"=>"Test",
+                "discription"=>"Testing insertion method",
+                "email"=>"test@test.69hub",
+                "datetime"=>"2021-04-12 16:58:33",
+                "submit"=>"Click"
+            );
+        */
+        public static function insertForm($table, $keyValueSet, $except = []){
+            try{
+               (new self)->runTimeError("insertForm");
+                if(!is_array($except)) {
+                    $except = explode(",",$except);
+                }
+                foreach ($except as $key => $value) {
+                    $except[$key] = trim($value);
+                }
+                $keySet = $valueSet = array();
+                foreach ($keyValueSet as $key => $value) {
+                    if(in_array($key, $except)) continue;
+                    $keySet[] = "`".$key."`";
+                    $valueSet[] = "'".$value."'";
+                }
+                $keySet = implode(', ',$keySet);
+                $valueSet = implode(', ',$valueSet);
+                $qry = "insert into $table($keySet) values ($valueSet)";
+                $insertion = $GLOBALS['connection']->query($qry);
+                if(!$insertion){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $GLOBALS['returnData'] = $GLOBALS['connection']->insert_id;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            } 
+        }
+    }
 
 
 
