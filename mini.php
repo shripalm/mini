@@ -42,7 +42,7 @@
         // limit is for limit i.e. (0,5) is similar to (limit 0,5), * is similar to all, default is 1
         public static function getSValue($field, $from, $whereCond = 1, $limit = 1){
             try{
-               (new self)->runTimeError("getSValue");
+                (new self)->runTimeError("getSValue");
                 if($field == '*'){
                     throw new Exception("You can use getMValue() instead of getSValue() for (*)");
                 }
@@ -97,7 +97,7 @@
         // must in those condition while substr at (key-word) is set and you have to fetch something important field from that condition
         public static function getMValue($field, $from, $whereCond = 1, $limit = 1, $remove = [], $must = []){
             try{
-               (new self)->runTimeError("getMValue");
+                (new self)->runTimeError("getMValue");
                 if(is_array($field)){
                     $field = implode(', ', $field);
                 }
@@ -200,7 +200,7 @@
         */
         public static function insert($table, $keyValueSet){
             try{
-               (new self)->runTimeError("insert");
+                (new self)->runTimeError("insert");
                 $keySet = $valueSet = array();
                 if( (!isset($keyValueSet['field'])) || (!isset($keyValueSet['value'])) || (!is_array($keyValueSet['field'])) || (!is_array($keyValueSet['value'])) ) throw new Exception("Check Your keyValueSet array..!");
                 foreach ($keyValueSet['field'] as $key => $value) {
@@ -244,9 +244,10 @@
                 "submit"=>"Click"
             );
         */
+        // $except indicates array or coma (,) saperated string of fields which are not being consider while insertion
         public static function insertForm($table, $keyValueSet, $except = []){
             try{
-               (new self)->runTimeError("insertForm");
+                (new self)->runTimeError("insertForm");
                 if(!is_array($except)) {
                     $except = explode(",",$except);
                 }
@@ -267,6 +268,53 @@
                     throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
                 }
                 $GLOBALS['returnData'] = $GLOBALS['connection']->insert_id;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            } 
+        }
+
+
+
+
+
+        // $keyValueSet indicates set of keys and values of a directly form or formate as defined
+        /*
+            $keyValueSet = array(
+                "name"=>"Test",
+                "discription"=>"Testing insertion method",
+                "email"=>"test@test.69hub",
+                "datetime"=>"2021-04-12 16:58:33",
+                "submit"=>"Click"
+            );
+        */
+        // $except indicates array or coma (,) saperated string of fields which are not being consider while insertion
+        // $whereCond indicates condition after where keyword
+        public static function update($table, $keyValueSet, $whereCond, $except = []){
+            try{
+                (new self)->runTimeError("update");
+                if(strlen(trim($whereCond)) == 0) throw new Exception("Where Condition is Required..!");
+                if(!is_array($except)) {
+                    $except = explode(",",$except);
+                }
+                foreach ($except as $key => $value) {
+                    $except[$key] = trim($value);
+                }
+                $keyValueUpdate = array();
+                foreach ($keyValueSet as $key => $value) {
+                    if(in_array($key, $except)) continue;
+                    $keyValueUpdate[] = "`".$key."`"." = "."'".$value."'";
+                }
+                $keyValueUpdate = implode(', ',$keyValueUpdate);
+                $qry = "update $table set $keyValueUpdate where $whereCond";
+                $updation = $GLOBALS['connection']->query($qry);
+                if(!$updation){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $GLOBALS['returnData'] = $updation;
             }
             catch(Exception $e){
                 $GLOBALS['returnData'] = $e->getMessage();

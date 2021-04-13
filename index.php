@@ -45,5 +45,15 @@
         "submit"=>"Click"
     );
     $except = array("submit");
-    var_dump(MINI::insertForm("query", $keyValueSet, "submit"));
+    $insertedId = MINI::insertForm("query", $keyValueSet, "submit");
+    
+    var_dump($insertedId);
+    
+    $keyValueSet = array(
+        "name"=>"Shripal",
+        "email"=>"Shripal.nextstep@gmail.com",
+        "submit"=>"Click"
+    );
+    $whereCond = "id=$insertedId";
+    var_dump(MINI::update("query", $keyValueSet, $whereCond, "submit"));
 ?>
