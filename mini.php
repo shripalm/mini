@@ -296,7 +296,6 @@
         public static function update($table, $keyValueSet, $whereCond, $except = []){
             try{
                 (new self)->runTimeError("update");
-                if(strlen(trim($whereCond)) == 0) throw new Exception("Where Condition is Required..!");
                 if(!is_array($except)) {
                     $except = explode(",",$except);
                 }
@@ -323,6 +322,77 @@
                 return $GLOBALS['returnData'];
             } 
         }
+
+
+
+
+        // $whereCond indicates condition after where keyword
+        public static function delete($table, $whereCond){
+            try{
+                (new self)->runTimeError("delete");
+                $qry = "delete from $table where $whereCond";
+                $deletion = $GLOBALS['connection']->query($qry);
+                if(!$deletion){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $GLOBALS['returnData'] = $deletion;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            } 
+        }
+
+
+
+        
+        // $whereCond indicates condition after where keyword
+        public static function query($query){
+            try{
+                (new self)->runTimeError("query");
+                $qry = $query;
+                $outputQuery = $GLOBALS['connection']->query($qry);
+                if(!$outputQuery){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $GLOBALS['returnData'] = $outputQuery;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            } 
+        }
+
+
+
+        public static function describe($table){
+            try{
+                (new self)->runTimeError("describe");
+                $qry = "desc $table";
+                $selector = $GLOBALS['connection']->query($qry);
+                if(!$selector){
+                    throw new Exception("Query:- $qry <br/>MySQL Error:- ".$GLOBALS['connection']->error);
+                }
+                $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
+                if(count($selector) == 0){
+                    throw new Exception("No data found");
+                }
+                $GLOBALS['returnData'] = $selector;
+            }
+            catch(Exception $e){
+                $GLOBALS['returnData'] = $e->getMessage();
+            }
+            finally{
+                return $GLOBALS['returnData'];
+            }
+        }
+
+
+
     }
 
 

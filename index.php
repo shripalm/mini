@@ -48,12 +48,20 @@
     $insertedId = MINI::insertForm("query", $keyValueSet, "submit");
     
     var_dump($insertedId);
-    
+
     $keyValueSet = array(
         "name"=>"Shripal",
         "email"=>"Shripal.nextstep@gmail.com",
         "submit"=>"Click"
     );
     $whereCond = "id=$insertedId";
-    var_dump(MINI::update("query", $keyValueSet, $whereCond, "submit"));
+    var_dump(MINI::update("query", $keyValueSet, whereCond: $whereCond, except: "submit"));
+
+    var_dump(MINI::delete("query", "name='Test'"));
+    
+    var_dump($selector = MINI::query("select *from query where $whereCond"));
+    var_dump(mysqli_fetch_all($selector, MYSQLI_ASSOC));
+    
+    
+    print_r(MINI::describe("query"));
 ?>
