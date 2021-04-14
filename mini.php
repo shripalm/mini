@@ -90,7 +90,7 @@
         // from is for table name
         // whereCond is for where Condition
         // limit is for limit i.e. (0,5) is similar to (limit 0,5), * is similar to all, default is 1
-        // remove is for removing some parameters while fetching all date
+        // remove is for removing some parameters while fetching all data
         // substr at last will checks that substr at condition occurs or not
         // substr at first will checks that substr at condition occurs or not
         // substr at (any word except last,first) will checks that substr at condition occurs or not
@@ -101,11 +101,9 @@
                 if(is_array($field)){
                     $field = implode(', ', $field);
                 }
-                $one = 0;
                 switch ($limit) {
                     case 1:
-                        $one = 1;
-                        $limit = null;
+                        $limit = "limit 0,1";
                         break;
                     case '*':
                         $limit = null;
@@ -124,17 +122,12 @@
                     throw new Exception("No data found");
                 }
                 $GLOBALS['returnData'] = null;
-                if($one == 1){
-                    $GLOBALS['returnData'][0] = $selector[0];
-                }
-                else{
-                    $GLOBALS['returnData'] = $selector;
-                }
+                $GLOBALS['returnData'] = $selector;
                 if(! is_array($remove)){
                     $remove = explode(',', $remove);
-                    if(! is_array($must)){
-                        $must = explode(',',$must);
-                    }
+                }
+                if(! is_array($must)){
+                    $must = explode(',',$must);
                 }
                 $remove = array_map('trim',array_filter($remove));
                 $must = array_map('trim',array_filter($must));

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <title>JS MINI TEST</title>
+</head>
+
+<body>
+    <button onclick="getSValue()">getSValue</button>
+    <button onclick="getMValue()">getMValue</button>
+    <button onclick="insert()">insert</button>
+    <button onclick="insertForm()">insertForm</button>
+    <button onclick="update()">update</button>
+    <button onclick="_delete()">delete</button>
+    <button onclick="query()">query</button>
+    <button onclick="describe()">describe</button>
+</body>
+
+<script>
+    const miniLoc = "http://localhost/mini/js.mini.php";
+
+    function getSValue() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'getSValue',
+                param: {
+                    field: 'id',
+                    from: 'login',
+                    // whereCond: '1',
+                    limit: '1'
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function getMValue() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'getMValue',
+                param: {
+                    field: '*',
+                    from: 'login',
+                    // whereCond: '1',
+                    limit: '0,1',
+                    remove: ['id at any', 'password'],
+                    // remove: 'id at any, password',
+                    must: ['sm_id', 'id'],
+                    // must: 'sm_id, id'
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function insert() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'insert',
+                param: {
+                    table: 'query',
+                    keyValueSet: {
+                        field: ['name', 'discription', 'email'],
+                        value: [
+                            ['test1', 'disc1', '1@2.co'],
+                            ['test2', 'disc2', '1@3.co']
+                        ]
+                    }
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function insertForm() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'insertForm',
+                param: {
+                    table: 'query',
+                    keyValueSet: {
+                        name: 'testForm',
+                        discription: '1235',
+                        email: '123@222.23w',
+                        submit: true,
+                        submit2: true
+                    },
+                    // except: ['submit', 'submit2'],
+                    except: 'submit, submit2',
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function update() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'update',
+                param: {
+                    table: 'query',
+                    keyValueSet: {
+                        name: 'Shripal',
+                        discription: '1235',
+                        email: '123@222.23w',
+                        submit: true,
+                        submit2: true
+                    },
+                    whereCond: 'id=104',
+                    // except: ['submit', 'submit2'],
+                    except: 'submit, submit2',
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function _delete() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'delete',
+                param: {
+                    table: 'query',
+                    whereCond: 'id<100',
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function query() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'query',
+                param: {
+                    query: 'truncate query'
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+
+    function describe() {
+        $.ajax({
+            url: miniLoc,
+            type: 'POST',
+            data: {
+                method: 'describe',
+                param: {
+                    table: 'query'
+                }
+            },
+            success: function(result) {
+                console.log(result);
+            }
+        });
+    }
+</script>
+
+</html>
