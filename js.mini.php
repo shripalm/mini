@@ -2,7 +2,7 @@
     // print_r($_POST);
     // exit;
     require 'mini.php';
-
+    require 'js.mini.middleware.php';
     function getFromPost($key, $returnValue, $required = false){
         if(!$returnValue){
             if ($required) {
@@ -14,6 +14,7 @@
     }
 
     $method = $_POST['method'];
+    autoConfig($method);
     switch ($method) {
         case 'getSValue':
             
