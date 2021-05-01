@@ -4,9 +4,9 @@
         $reffererPage = $_SERVER['HTTP_REFERER'];
 
         /*
-            refuse from array,
-            accept file name extension array,
-            new => manually addable for particular directory 
+            refuse from array, refugeGlobalCheck, Refuge any method for global thing
+            accept file name extension array, like accept only .php or .html from HTTP_REFERRER
+            new => manually addable for particular directory, like every directory can have own globalCkeck 
         */
 
         if(! str_starts_with($reffererPage, $acceptRequestStartsFrom)){
