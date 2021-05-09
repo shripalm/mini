@@ -12,6 +12,12 @@
         }
         return $returnValue;
     }
+    function returnResponseMiddleware($response, $code = 200){
+        $response = configResponse($response);
+        $response = ["code"=> $code, "message"=> $response];
+        echo json_encode($response);
+        exit;
+    }
 
     $method = $_POST['method'];
     autoConfig($method);
@@ -99,5 +105,5 @@
             $response = null;
             break;
     }
-    print_r($response);
+    returnResponseMiddleware($response);
 ?>

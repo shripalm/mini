@@ -25,7 +25,7 @@
 <script>
     const miniLoc = "http://localhost/mini/js.mini.php";
 
-    function getSValue() {
+    const getSValue = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -44,7 +44,7 @@
         });
     }
 
-    function getMValue() {
+    const getMValue = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -67,7 +67,7 @@
         });
     }
 
-    function insert() {
+    const insert = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -90,7 +90,7 @@
         });
     }
 
-    function insertForm() {
+    const insertForm = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -115,7 +115,7 @@
         });
     }
 
-    function update() {
+    const update = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -141,7 +141,7 @@
         });
     }
 
-    function _delete() {
+    const _delete = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -158,7 +158,7 @@
         });
     }
 
-    function query() {
+    const query = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',
@@ -174,7 +174,7 @@
         });
     }
 
-    function describe() {
+    const describe = function() {
         $.ajax({
             url: miniLoc,
             type: 'POST',

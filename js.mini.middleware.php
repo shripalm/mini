@@ -4,18 +4,24 @@
         $reffererPage = $_SERVER['HTTP_REFERER'];
 
         /*
-            refuse from array, refugeGlobalCheck, Refuge any method for global thing
-            accept file name extension array, like accept only .php or .html from HTTP_REFERRER
-            new => manually addable for particular directory, like every directory can have own globalCkeck 
+            refuse fields
         */
 
         if(! str_starts_with($reffererPage, $acceptRequestStartsFrom)){
-            echo "Server Refused Connection..!";
-            exit;
+            returnResponseMiddleware("Server Refused Connection..!");
         }
 
         $suffix = '.'.end(explode('.',basename($reffererPage)));
         $fromPage = basename($reffererPage, $suffix);
+
+        $globalExt = [
+            '.php',
+            '.html'
+        ];
+
+        if(! in_array($suffix, $globalExt)){
+            returnResponseMiddleware("Server Refused Connection..! You must add your current file extension in globalExt..!");
+        }
 
         $globalCheck = [
             'getSValue',
@@ -29,17 +35,50 @@
         ];
 
         if(! in_array($method, $globalCheck)){
-            echo "You cannot access $method from here..!";
-            exit;
+            returnResponseMiddleware ("You cannot access $method from here..!");
         }
 
         $index = [
-            'insertForm'
+            'insertForm',
+            'getSValue',
+            'describe'
         ];
 
         if(! in_array($method, $$fromPage ?? $globalCheck)){
-            echo "You cannot access $method from $fromPage page..!";
-            exit;
+            returnResponseMiddleware ("You cannot access $method from $fromPage page..!");
         }
+
+        $individualFileCheck = [
+            "http://localhost/mini/index.html" => [
+                "describe",
+                "insertForm"
+            ],
+        ];
+
+        if(isset($individualFileCheck[$reffererPage])){
+            if(! in_array($method, $individualFileCheck[$reffererPage])){
+                returnResponseMiddleware ("You cannot access $method from $reffererPage page..!");
+            }
+        }
+
+    }
+
+    function configResponse($response){
+        $restrictedFields = [
+            'Key'
+        ];
+        if(is_array($response)){
+            foreach ($response as $key => $value) {
+                if(is_array($value)){
+                    $key = configResponse($value);
+                }
+                else{
+                    if(in_array($key, $restrictedFields)){
+                        unset($response[$key]);
+                    }
+                }
+            }
+        }
+        return $response;
     }
 ?>
