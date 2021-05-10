@@ -2,11 +2,7 @@
     function autoConfig($method){
         $acceptRequestStartsFrom = 'http://localhost/';
         $reffererPage = $_SERVER['HTTP_REFERER'];
-
-        /*
-            refuse fields
-        */
-
+        
         if(! str_starts_with($reffererPage, $acceptRequestStartsFrom)){
             returnResponseMiddleware("Server Refused Connection..!");
         }
