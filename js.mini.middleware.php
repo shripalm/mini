@@ -62,15 +62,15 @@
         }
 
     }
-
     function configResponse($response){
         $restrictedFields = [
-            'Key'
+            'Key',
+            'Field'
         ];
         if(is_array($response)){
             foreach ($response as $key => $value) {
                 if(is_array($value)){
-                    $key = configResponse($value);
+                    $response[$key] = configResponse($value);
                 }
                 else{
                     if(in_array($key, $restrictedFields)){
