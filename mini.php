@@ -1,20 +1,14 @@
 <?php 
 
-    
-    /**
-        * @category    Optimize
-        * @author      jollyDev           <jolly.devel.x@gmail.com>
-        * @author      Shripal Mehta      <shripal.nextstep@gmail.com>
-    */
+    error_reporting(0);
 
-    // error_reporting(0);
     // configuration starts
     // initialize return variable
     $returnData = null;
     
     
     // Database configuration
-    $connection = new mysqli('localhost', 'root', '', 'shaadimuhurat_user');
+    $connection = new mysqli('localhost', 'root', '', 'shaadi');
     
     
     // echoing error on connection error
@@ -26,6 +20,7 @@
     
     
     class MINI{
+
         public function __construct(){ 
             // Constructor
         }
@@ -131,6 +126,29 @@
                 }
                 $remove = array_map('trim',array_filter($remove));
                 $must = array_map('trim',array_filter($must));
+
+                
+                // If u r using lower version than PHP8 simply uncomment below functions
+
+                // function str_starts_with($str, $substr){
+                //     for($i=0;$i<strlen($substr);$i++){
+                //         if($str[$i] !== $substr[$i]) return(false);
+                //     }
+                //     return(true);
+                // }
+
+                // function str_ends_with($str, $substr){
+                //     return(str_starts_with(strrev($str), strrev($substr)));
+                // }
+
+                // function str_contains($str, $substr){
+                //     if(strpos($str, $substr) == false) return(false);
+                //     return(true);
+                // }
+
+
+
+
                 foreach($remove as $keyRemove => $valueRemove){
                     if(str_contains($valueRemove, ' at ')){
                         $valueAsCommand = explode(' at ',$valueRemove);
