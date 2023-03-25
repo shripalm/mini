@@ -18,6 +18,24 @@
     }
     // configuration Complete
     
+    // If u r using lower version than PHP8 simply uncomment below functions
+
+    function mini_str_starts_with($str, $substr){
+        for($i=0;$i<strlen($substr);$i++){
+            if($str[$i] !== $substr[$i]) return(false);
+        }
+        return(true);
+    }
+
+    function mini_str_ends_with($str, $substr){
+        return(mini_str_starts_with(strrev($str), strrev($substr)));
+    }
+
+    function mini_str_contains($str, $substr){
+        if(strpos($str, $substr) === false) return(false);
+        return(true);
+    }
+
     
     class MINI{
 
@@ -61,17 +79,20 @@
                 }
                 $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
                 if(count($selector) == 0){
-                    throw new Exception("No data found");
-                }
-                $GLOBALS['returnData'] = null;
-                if($one == 1){
-                    $GLOBALS['returnData'] = $selector[0][$field];
+                    $GLOBALS['returnData'] = null;
                 }
                 else{
-                    $GLOBALS['returnData'] = $selector;
+                    $GLOBALS['returnData'] = null;
+                    if($one == 1){
+                        $GLOBALS['returnData'] = $selector[0][$field];
+                    }
+                    else{
+                        $GLOBALS['returnData'] = $selector;
+                    }
                 }
             }
             catch(Exception $e){
+                
                 $GLOBALS['returnData'] = $e->getMessage();
             }
             finally{
@@ -114,68 +135,49 @@
                 }
                 $selector = mysqli_fetch_all($selector, MYSQLI_ASSOC);
                 if(count($selector) == 0){
-                    throw new Exception("No data found");
+                    $GLOBALS['returnData'] = null;
                 }
-                $GLOBALS['returnData'] = null;
-                $GLOBALS['returnData'] = $selector;
-                if(! is_array($remove)){
-                    $remove = explode(',', $remove);
-                }
-                if(! is_array($must)){
-                    $must = explode(',',$must);
-                }
-                $remove = array_map('trim',array_filter($remove));
-                $must = array_map('trim',array_filter($must));
-
-                
-                // If u r using lower version than PHP8 simply uncomment below functions
-
-                // function str_starts_with($str, $substr){
-                //     for($i=0;$i<strlen($substr);$i++){
-                //         if($str[$i] !== $substr[$i]) return(false);
-                //     }
-                //     return(true);
-                // }
-
-                // function str_ends_with($str, $substr){
-                //     return(str_starts_with(strrev($str), strrev($substr)));
-                // }
-
-                // function str_contains($str, $substr){
-                //     if(strpos($str, $substr) == false) return(false);
-                //     return(true);
-                // }
+                else{
+                    $GLOBALS['returnData'] = null;
+                    $GLOBALS['returnData'] = $selector;
+                    if(! is_array($remove)){
+                        $remove = explode(',', $remove);
+                    }
+                    if(! is_array($must)){
+                        $must = explode(',',$must);
+                    }
+                    $remove = array_map('trim',array_filter($remove));
+                    $must = array_map('trim',array_filter($must));
 
 
-
-
-                foreach($remove as $keyRemove => $valueRemove){
-                    if(str_contains($valueRemove, ' at ')){
-                        $valueAsCommand = explode(' at ',$valueRemove);
-                        switch ($valueAsCommand[1]) {
-                            case 'last':
-                                $operationMethod = 'str_ends_with';
-                                break;
-                            case 'first':
-                                $operationMethod = 'str_starts_with';
-                                break;
-                            default:
-                                $operationMethod = 'str_contains';
-                                break;
-                        }
-                        foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
-                            foreach ($valueReturn as $keyCommand => $valueCommand) {
-                                if($operationMethod($keyCommand,$valueAsCommand[0])){
-                                    if(! in_array($keyCommand, $must)){
-                                        unset($GLOBALS['returnData'][$keyReturn][$keyCommand]);
+                    foreach($remove as $keyRemove => $valueRemove){
+                        if(mini_str_contains($valueRemove, ' at ')){
+                            $valueAsCommand = explode(' at ',$valueRemove);
+                            switch ($valueAsCommand[1]) {
+                                case 'last':
+                                    $operationMethod = 'mini_str_ends_with';
+                                    break;
+                                case 'first':
+                                    $operationMethod = 'mini_str_starts_with';
+                                    break;
+                                default:
+                                    $operationMethod = 'mini_str_contains';
+                                    break;
+                            }
+                            foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
+                                foreach ($valueReturn as $keyCommand => $valueCommand) {
+                                    if($operationMethod($keyCommand,$valueAsCommand[0])){
+                                        if(! in_array($keyCommand, $must)){
+                                            unset($GLOBALS['returnData'][$keyReturn][$keyCommand]);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    else{
-                        foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
-                            unset($GLOBALS['returnData'][$keyReturn][$valueRemove]);
+                        else{
+                            foreach ($GLOBALS['returnData'] as $keyReturn => $valueReturn) {
+                                unset($GLOBALS['returnData'][$keyReturn][$valueRemove]);
+                            }
                         }
                     }
                 }
