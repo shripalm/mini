@@ -63,7 +63,7 @@
                 switch ($limit) {
                     case 1:
                         $one = 1;
-                        $limit = null;
+                        $limit = 'limit 0,1';
                         break;
                     case '*':
                         $limit = null;
